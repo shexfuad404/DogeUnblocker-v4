@@ -8,21 +8,22 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 <style>
-    /* چاککردنی جێگای تابەکان و بارەکە */
-    body { margin: 0; padding: 0; background: #000; overflow: hidden; }
+    body { margin: 0; padding: 0; background: #000; overflow: hidden; height: 100vh; display: flex; flex-direction: column; }
     
+    /* بەشی تابەکان */
     .chrome-tabs {
         display: flex;
         background: #111;
-        padding: 8px 10px 0;
+        padding: 5px 10px 0;
         gap: 5px;
+        height: 35px; /* بەرزی تابەکان */
         border-bottom: 1px solid #222;
-        height: 40px;
+        flex-shrink: 0;
     }
     .chrome-tab {
         background: #222;
         color: #777;
-        padding: 8px 18px;
+        padding: 5px 20px;
         border-radius: 8px 8px 0 0;
         border: none;
         cursor: pointer;
@@ -33,26 +34,40 @@
     .chrome-tab.active {
         background: #333;
         color: #fff;
-        font-weight: bold;
     }
 
+    /* بەشی بارەکە - لێرە ڕێکم خستووەتەوە */
     #urlBar {
-        position: relative !important;
-        top: 0 !important;
-        display: flex;
+        display: flex !important;
         align-items: center;
         background: #333;
-        padding: 5px;
-        height: 45px;
+        padding: 0 15px;
+        height: 50px; /* بەرزی بارەکە */
+        flex-shrink: 0;
+        position: relative !important;
+        z-index: 10;
+        gap: 10px;
     }
 
+    /* شوێنی نووسینی لینکەکە */
+    #urlInput {
+        flex: 1;
+        background: #111;
+        border: 1px solid #444;
+        color: #fff;
+        padding: 8px 15px;
+        border-radius: 20px;
+        outline: none;
+    }
+
+    /* بەشی پیشاندانی سایتەکان */
     .iframe-wrapper {
-        height: calc(100vh - 95px);
+        flex: 1; /* هەموو ئەوەی دەمێنێتەوە بۆ ئایفریم بێت */
         width: 100%;
         background: #000;
+        position: relative;
     }
 
-    /* ئەم بەشە زۆر گرنگە بۆ ئەوەی سپی نەبێت */
     .browser-frame {
         width: 100%;
         height: 100%;
@@ -71,11 +86,9 @@
         let encodedUrl = localStorage.getItem("encodedUrl");
         let fullUrl = "/service/" + encodedUrl;
         
-        // دانانی لینکەکان
-        document.getElementById("siteurl").src = fullUrl; // تاب 1
-        document.getElementById("siteurl2").src = fullUrl; // تاب 2
+        document.getElementById("siteurl").src = fullUrl;
+        document.getElementById("siteurl2").src = fullUrl;
 
-        // URL Cloaking
         history.pushState({}, "Google Docs", "/student?auth=doge" + Math.floor(Math.random() * 999));
     };
 
@@ -85,7 +98,6 @@
         document.getElementById('tab' + num).classList.add('active');
 
         document.querySelectorAll('.browser-frame').forEach(f => f.classList.remove('active'));
-        // فێڵەکە لێرەدایە: تابی یەکەم ناوی 'siteurl'ە تا loader.js نەیبڕێت
         if(num === 1) {
             document.getElementById('siteurl').classList.add('active');
         } else {
@@ -96,7 +108,6 @@
     function loadNewUrl() {
         let input = document.getElementById("urlInput").value;
         if(!input) return;
-        // ئینکۆدکردنی یو ئاڕ ئێڵ وەک Doge
         let proxied = "/service/" + btoa(input).replace(/\//g, "_").replace(/\+/g, "-").replace(/=/g, "");
         
         if(currentTab === 1) {
@@ -106,28 +117,27 @@
         }
     }
 </script>
-<title>Doge | V4 Fixed</title>
+<title>Doge | Fixed Layout</title>
 </head>
 <body>
 
-<!-- بەشی تابەکان (Chrome Style) -->
+<!-- ١. تابەکان -->
 <div class="chrome-tabs">
     <button class="chrome-tab active" id="tab1" onclick="switchTab(1)">Tab 1</button>
     <button class="chrome-tab" id="tab2" onclick="switchTab(2)">Tab 2</button>
 </div>
 
-<!-- بارەکەی خۆت بە هەموو دوگمەکانەوە -->
+<!-- ٢. بارەکەی سەرەوە (URL Bar) -->
 <div id="urlBar">
-  <input type="text" id="urlInput" placeholder="Search Google or type a URL" class="navsearch" onkeydown="if(event.key==='Enter') loadNewUrl()" />
-  <i class="bi bi-search search" onclick="loadNewUrl()"></i>
-  <button class="bi bi-arrows-fullscreen fs" onclick="toggleFs()"></button>
-  <button class="bi bi-arrow-clockwise reload" onclick="location.reload()"></button>
-  <button class="bi bi-box-arrow-right exit" onclick="window.location.href='/'"></button>
+  <input type="text" id="urlInput" placeholder="Search Google or type a URL" onkeydown="if(event.key==='Enter') loadNewUrl()" />
+  <i class="bi bi-search" style="color: white; cursor: pointer;" onclick="loadNewUrl()"></i>
+  <button class="bi bi-arrows-fullscreen" style="background:none; border:none; color:white; cursor:pointer;" onclick="toggleFs()"></button>
+  <button class="bi bi-arrow-clockwise" style="background:none; border:none; color:white; cursor:pointer;" onclick="location.reload()"></button>
+  <button class="bi bi-box-arrow-right" style="background:none; border:none; color:white; cursor:pointer;" onclick="window.location.href='/'"></button>
 </div>
 
-<!-- بەشی ئایفریمەکان -->
+<!-- ٣. ئایفریمەکان -->
 <div class="iframe-wrapper">
-    <!-- ئایفریمی یەکەم ناوی 'siteurl'ە بۆ ئەوەی loader.js ئیش بکات -->
     <iframe src="loading.html" id="siteurl" class="browser-frame active"></iframe>
     <iframe src="loading.html" id="siteurl2" class="browser-frame"></iframe>
 </div>
